@@ -12,21 +12,19 @@ def gen_distance_vec(tweet,trigger_word):
 tweet_pairs = []
 distance_vecs = []
 file_path = './generated_dataset.txt'
+pair_up_threshold = 604800000
 with open(file_path,'r') as f:
 	line = 0
-	trigger_word = {}
+	tot_data = []
 	for i in f:
 		data = i.strip('\n').split('\t')
 		distance_vecs.append(gen_distance_vec(data[-1],data[3]))
-		if data[3] not in trigger_word.keys():
-			trigger_word[data[3]] = []
-		trigger_word[data[3]].append(line)
+		tot_data.append(data)
 		line += 1
-	for word in trigger_word.keys():
-		if len(trigger_word[word]) > 1:
-			for i in range(len(trigger_word[word])):
-				for j in range(i+1,len(trigger_word[word])):
-					tweet_pairs.append([trigger_word[word][i],trigger_word[word][j]])
+	for i in range(len(tot_data)):
+		for j in range(len(tot_data)):
+			if abs(int(tot_data[i][4])-int(tot_data[j][4])) <= pair_up_threshold:
+				tweet_pairs.append([i,j])
 
 f = open('distance_vectors.txt','w')
 f.write(str(distance_vecs))
