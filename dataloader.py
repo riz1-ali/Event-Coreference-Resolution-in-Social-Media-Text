@@ -2,6 +2,8 @@ from torch.utils import data
 from torch.nn.utils import rnn
 import torch
 from gensim.models import Word2Vec
+from tweet_tokenize import tweet_tokenize
+import pickle
 
 class dataset(data.Dataset):
 	def __init__(self,tweet_pairs,distance_vectors):
@@ -27,11 +29,14 @@ file_path = './generated_dataset.txt'
 with open(file_path,'r') as f:
 	for i in f:
 		j = i.strip('\n').split('\t')
-		data_.append(j[-1])
-f = open('./tweet_pairs.txt','r')
-tweet_pairs = eval(f.read())
-f = open('./distance_vectors.txt','r')
-distance_vectors = eval(f.read())
+		data_.append(tweet_tokenize(j[-1]))
+
+tweet_pairs,distance_vectors = [],[]
+with open('./tweet_pairs.pkl','rb') as f:
+	tweet_pairs = pickle.load(f)
+with open('./distance_vectors.pkl','rb') as f:
+	distance_vectors = pickle.load(f)
+
 tweet_pair_data = [[data_[i[0]],data_[i[1]]] for i in tweet_pairs]
 distance_vector_data = [[distance_vectors[i[0]],distance_vectors[i[1]]] for i in tweet_pairs]
 # loader = data.DataLoader(data_, batch_size=32, collate_fn=collate_fn, shuffle=True)
