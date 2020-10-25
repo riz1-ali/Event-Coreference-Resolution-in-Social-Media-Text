@@ -1,4 +1,3 @@
-from tweet_tokenize import tweet_tokenize
 import pickle
 
 def gen_distance_vec(tweet,trigger_word):
@@ -21,7 +20,6 @@ with open(file_path,'r') as f:
 	tot_data = []
 	for i in f:
 		data = i.strip('\n').split('\t')
-		data[-1] = tweet_tokenize(data[-1])
 		distance_vecs.append(gen_distance_vec(data[-1],data[3]))
 		tot_data.append(data)
 	for i in range(len(tot_data)):
