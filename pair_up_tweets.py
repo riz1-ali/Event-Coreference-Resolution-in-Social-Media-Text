@@ -1,10 +1,10 @@
 import pickle
-
+import tokenizer as tk
 
 def gen_distance_vec(tweet, trigger_word):
     trig = trigger_word.split()
     trig = trig[len(trig) // 2]
-    words = tweet.split()
+    words = tk.tokenize(tweet)
     pos = -1
     for i in range(len(words)):
         if trig == words[i]:
