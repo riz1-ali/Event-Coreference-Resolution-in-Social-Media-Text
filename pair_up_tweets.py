@@ -31,6 +31,15 @@ with open(file_path, 'r') as f:
                    int(tot_data[j][4])) <= pair_up_threshold:
                 tweet_pairs.append([i, j])
 
+minv = 200
+for i in distance_vecs:
+    minv = min(minv,min(i))
+
+minv -= 1
+for i in range(len(distance_vecs)):
+    for j in range(len(distance_vecs[i])):
+        distance_vecs[i][j] -= minv
+
 with open('distance_vectors.pkl', 'wb') as f:
     pickle.dump(distance_vecs, f)
 with open('tweet_pairs.pkl', 'wb') as f:
