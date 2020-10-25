@@ -42,13 +42,23 @@ with open(file_path, 'r') as f:
 	for i in f:
 		data = i.strip('\n').split('\t')
 		data[-1] = data[-1].lower()
+<<<<<<< HEAD
 		dis_v,pos = gen_distance_vec(data[-1].lower(), data[-3].lower())
+=======
+		dis_v,pos = gen_distance_vec(data[-1].lower(), data[4].lower())
+>>>>>>> 5b0e3e9f57f560619ac028e55a02188d92315862
 		distance_vecs.append(dis_v)
 		first_last_pos.append(pos)
 		tot_data.append(data)
 	for i in range(len(tot_data)):
+<<<<<<< HEAD
 		for j in range(i+1,len(tot_data)):
 			if int(tot_data[j][-2]) - int(tot_data[i][-2]) <= pair_up_threshold:
+=======
+		for j in range(len(tot_data)):
+			if abs(int(tot_data[i][5]) -
+				   int(tot_data[j][5])) <= pair_up_threshold:
+>>>>>>> 5b0e3e9f57f560619ac028e55a02188d92315862
 				tweet_pairs.append([i, j])
 
 minv = 200
