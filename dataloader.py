@@ -72,5 +72,6 @@ if __name__ == "__main__":
 
 	dataset_ = dataset(tweet_pair_data, distance_vector_data)
 	loader = data.DataLoader(dataset_, batch_size=32, collate_fn=collate_fn, shuffle=True)
+
 	for i in loader:
 		pass

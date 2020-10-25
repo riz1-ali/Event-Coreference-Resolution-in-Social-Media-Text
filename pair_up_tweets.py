@@ -3,21 +3,31 @@ import tokenizer as tk
 
 def gen_distance_vec(tweet, trigger_word):
 	trig = tk.tokenize(trigger_word)
-	trig = trig[len(trig) // 2]
 	words = tk.tokenize(tweet)
 	pos = -1
 	for i in range(len(words)):
-		if trig == words[i]:
+		if trig[len(trig)//2] == words[i]:
 			pos = i
 			break
 	first_p,last_p = -1,-1
 	for i in range(len(words)):
 		if trig[0] == words[i]:
 			first_p = i
-		break
+			break
+	if first_p==-1:
+		for i in range(len(words)):
+			if trig[0] in words[i] or words[i] in trig[0]:
+				first_p = i
+				break
 	for i in range(len(words)-1,-1,-1):
 		if trig[-1] == words[i]:
 			last_p = i
+			break
+	if last_p==-1:
+		for i in range(len(words)):
+			if trig[-1] in words[i] or words[i] in trig[-1]:
+				last_p = i
+				break
 	return [i - pos for i in range(len(words))],[first_p,last_p]
 
 
@@ -32,14 +42,13 @@ with open(file_path, 'r') as f:
 	for i in f:
 		data = i.strip('\n').split('\t')
 		data[-1] = data[-1].lower()
-		dis_v,pos = gen_distance_vec(data[-1], data[3])
+		dis_v,pos = gen_distance_vec(data[-1].lower(), data[-3].lower())
 		distance_vecs.append(dis_v)
 		first_last_pos.append(pos)
 		tot_data.append(data)
 	for i in range(len(tot_data)):
-		for j in range(len(tot_data)):
-			if abs(int(tot_data[i][4]) -
-				   int(tot_data[j][4])) <= pair_up_threshold:
+		for j in range(i+1,len(tot_data)):
+			if int(tot_data[j][-2]) - int(tot_data[i][-2]) <= pair_up_threshold:
 				tweet_pairs.append([i, j])
 
 minv = 200
