@@ -18,6 +18,8 @@ def gen_distance_vec(tweet, trigger_word):
 		if trig[-1] == words[i]:
 			last_p = i
 			break
+	if first_p==-1 or last_p==-1:
+		print(trig,words)
 	return [i - pos for i in range(len(words))],[first_p,last_p]
 
 
@@ -32,7 +34,7 @@ with open(file_path, 'r') as f:
 	for i in f:
 		data = i.strip('\n').split('\t')
 		data[-1] = data[-1].lower()
-		dis_v,pos = gen_distance_vec(data[-1], data[3])
+		dis_v,pos = gen_distance_vec(data[-1].lower(), data[3].lower())
 		distance_vecs.append(dis_v)
 		first_last_pos.append(pos)
 		tot_data.append(data)
