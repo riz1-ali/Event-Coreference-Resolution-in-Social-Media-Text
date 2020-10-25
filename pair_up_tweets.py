@@ -3,21 +3,21 @@ import tokenizer as tk
 
 def gen_distance_vec(tweet, trigger_word):
 	trig = tk.tokenize(trigger_word)
-	trig = trig[len(trig) // 2]
 	words = tk.tokenize(tweet)
 	pos = -1
 	for i in range(len(words)):
-		if trig == words[i]:
+		if trig[len(trig)//2] == words[i]:
 			pos = i
 			break
 	first_p,last_p = -1,-1
 	for i in range(len(words)):
 		if trig[0] == words[i]:
 			first_p = i
-		break
+			break
 	for i in range(len(words)-1,-1,-1):
 		if trig[-1] == words[i]:
 			last_p = i
+			break
 	return [i - pos for i in range(len(words))],[first_p,last_p]
 
 
