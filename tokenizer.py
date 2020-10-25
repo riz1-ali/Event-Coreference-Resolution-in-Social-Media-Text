@@ -9,9 +9,11 @@ statistical learning with in-the-loop human evaluation :)
 
 __author__ = "brendan o'connor (anyall.org)"
 
-import re, sys
+import re
+import sys
 
-mycompile = lambda pat: re.compile(pat, re.UNICODE)
+
+def mycompile(pat): return re.compile(pat, re.UNICODE)
 
 
 def regex_or(*items):
@@ -43,7 +45,8 @@ Entity = '&(amp|lt|gt|quot);'
 UrlStart1 = regex_or('https?://', r'www\.')
 CommonTLDs = regex_or('com', 'co\\.uk', 'org', 'net', 'info', 'ca')
 UrlStart2 = r'[a-z0-9\.-]+?' + r'\.' + CommonTLDs + pos_lookahead(r'[/ \W\b]')
-UrlBody = r'[^ \t\r\n<>]*?'  # * not + for case of:  "go to bla.com." -- don't want period
+# * not + for case of:  "go to bla.com." -- don't want period
+UrlBody = r'[^ \t\r\n<>]*?'
 UrlExtraCrapBeforeEnd = '%s+?' % regex_or(PunctChars, Entity)
 UrlEnd = regex_or(r'\.\.+', r'[<>]', r'\s', '$')
 Url = (r'\b' +
@@ -115,7 +118,8 @@ class Tokenization(list):
 
     def assert_consistent(t):
         assert len(t) == len(t.alignments)
-        assert [t.text[t.alignments[i]: (t.alignments[i] + len(t[i]))] for i in range(len(t))] == list(t)
+        assert [t.text[t.alignments[i]: (t.alignments[i] + len(t[i]))]
+                for i in range(len(t))] == list(t)
 
 
 def align(toks, orig):
@@ -129,7 +133,8 @@ def align(toks, orig):
                 s_i += L
                 break
             s_i += 1
-            if s_i >= len(orig): raise AlignmentFailed((orig, toks, alignments))
+            if s_i >= len(orig):
+                raise AlignmentFailed((orig, toks, alignments))
             # if orig[s_i] != ' ': raise AlignmentFailed("nonspace advance: %s" % ((s_i,orig),))
     for a in alignments:
         if a is None:
@@ -137,7 +142,8 @@ def align(toks, orig):
     return alignments
 
 
-class AlignmentFailed(Exception): pass
+class AlignmentFailed(Exception):
+    pass
 
 
 # def unicodify(s, encoding='utf8', *args):
