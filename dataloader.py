@@ -64,7 +64,7 @@ def collate_fn(batch):
 
 if __name__ == "__main__":
 	data_ = []
-	file_path = './generated_dataset.txt'
+	file_path = './FinalDataset.csv'
 	with open(file_path, 'r') as f:
 		for i in f:
 			j = i.strip('\n').split('\t')

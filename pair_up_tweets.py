@@ -26,7 +26,7 @@ def gen_distance_vec(tweet, trigger_word):
 tweet_pairs = []
 distance_vecs = []
 first_last_pos = []
-file_path = './generated_dataset.txt'
+file_path = './FinalDataset.csv'
 pair_up_threshold = 604800000
 
 with open(file_path, 'r') as f:
