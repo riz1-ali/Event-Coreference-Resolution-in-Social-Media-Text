@@ -7,13 +7,14 @@ import tokenizer as tk
 from tqdm import tqdm
 
 class dataset(data.Dataset):
-	def __init__(self, tweet_pairs, distance_vectors, trigger_word_pos):
+	def __init__(self, tweet_pairs, distance_vectors, trigger_word_pos, labels):
 		self.tweet_pairs = tweet_pairs
 		self.distance_vectors = distance_vectors
 		self.vocab = None
 		with open('./vocab.pkl', 'rb') as f:
 			self.vocab = pickle.load(f)
 		self.trigger_word_pos = trigger_word_pos
+		self.labels = labels
 
 	def __len__(self):
 		return len(self.tweet_pairs)
@@ -25,7 +26,7 @@ class dataset(data.Dataset):
 		return torch.Tensor(self.convert_tweet(self.tweet_pairs[index][0])), torch.Tensor(self.convert_tweet(
 			self.tweet_pairs[index][1])), torch.Tensor(self.distance_vectors[index][0]), torch.Tensor(
 				self.distance_vectors[index][1]), torch.Tensor(self.trigger_word_pos[index][0]), torch.Tensor(
-					self.trigger_word_pos[index][1]) 
+					self.trigger_word_pos[index][1]), torch.Tensor([self.labels[index]]) 
 
 
 def collate_fn(batch):
@@ -35,6 +36,7 @@ def collate_fn(batch):
 	distance2s = []
 	pos1s = []
 	pos2s = []
+	labels = []
 	for data in batch:
 		tweet1s.append(data[0])
 		tweet2s.append(data[1])
@@ -42,6 +44,7 @@ def collate_fn(batch):
 		distance2s.append(data[3])
 		pos1s.append(data[4].tolist())
 		pos2s.append(data[5].tolist())
+		labels.append(data[6].item())
 	
 	packed_tweet1s = rnn.pack_sequence(tweet1s, enforce_sorted=False)
 	packed_tweet2s = rnn.pack_sequence(tweet2s, enforce_sorted=False)
@@ -58,7 +61,8 @@ def collate_fn(batch):
 		padded_distance1s, 
 		padded_distance2s,
 		torch.Tensor(pos1s),
-		torch.Tensor(pos2s)
+		torch.Tensor(pos2s),
+		torch.Tensor(labels)
 		)
 
 
@@ -82,7 +86,9 @@ if __name__ == "__main__":
 	distance_vector_data = [[distance_vectors[i[0]],
 							 distance_vectors[i[1]]] for i in tweet_pairs]
 	trigger_word_pos_data = [[trigger_word_pos[i[0]], trigger_word_pos[i[1]]] for i in tweet_pairs]
-	dataset_ = dataset(tweet_pair_data, distance_vector_data, trigger_word_pos_data)
+	labels_data = [i[2] for i in tweet_pairs]
+
+	dataset_ = dataset(tweet_pair_data, distance_vector_data, trigger_word_pos_data, labels_data)
 	loader = data.DataLoader(dataset_, batch_size=128, collate_fn=collate_fn, shuffle=True)
 	for i in tqdm(loader):
 		pass
