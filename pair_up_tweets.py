@@ -1,6 +1,6 @@
 import pickle
 import tokenizer as tk
-
+from tqdm import tqdm
 
 def gen_distance_vec(tweet, trigger_word):
 	trig = tk.tokenize(trigger_word)
@@ -57,7 +57,7 @@ with open(file_path, 'r') as f:
 		distance_vecs.append(dis_v)
 		first_last_pos.append(pos)
 		tot_data.append(data)
-	for i in range(len(tot_data)):
+	for i in tqdm(range(len(tot_data))):
 		for j in range(i + 1, len(tot_data)):
 			if int(tot_data[j][4]) - int(tot_data[i][4]) <= pair_up_threshold:
 				label = 0

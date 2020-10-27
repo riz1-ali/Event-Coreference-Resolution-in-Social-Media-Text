@@ -1,11 +1,11 @@
 Event Coreference Resolution in Social Media Text
 ============================
 
-##Prerequisites
+## Prerequisites
 - [Anaconda/Miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/)
 
 
-##To set up the repo.
+## To set up the repo.
 ```
 git clone https://github.com/riz1-ali/Event-Coreference-Resolution-in-Social-Media-Text/
 cd Event-Coreference-Resolution-in-Social-Media-Text
@@ -15,7 +15,7 @@ pip install -r requirements.txt
 conda install -c pytorch pytorch
 ```
 
-##Running Code
+## Running Code
 To fetch and preprocess the dataset, please checkout the ```fetch_dataset.ipynb``` notebook. However, the tweets are saved in ```generated_dataset.txt```. 
 
 The preprocessed tweets are then saved in ```FinalDataset.csv```.
