@@ -13,7 +13,8 @@ import re
 import sys
 
 
-def mycompile(pat): return re.compile(pat, re.UNICODE)
+def mycompile(pat):
+    return re.compile(pat, re.UNICODE)
 
 
 def regex_or(*items):
