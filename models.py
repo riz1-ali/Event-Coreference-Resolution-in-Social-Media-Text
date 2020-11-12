@@ -3,7 +3,7 @@ from torch import nn
 import pickle
 from torch.autograd import Variable
 from torchnlp.nn import Attention
-
+from transformers import AlbertModel
 
 class base_model(nn.Module):
     def __init__(
@@ -61,6 +61,7 @@ class base_model(nn.Module):
             self.selective = nn.Linear(hidden_size, 1)
             self.attention = Attention(hidden_size)
         self.device = device
+        self.albert = AlbertModel.from_pretrained('albert-base-v2', return_dict=True)
 
     def init_hidden(self, batch_size):
         if self.bidirectional:
@@ -96,7 +97,7 @@ class base_model(nn.Module):
                     self.device)
                 return h
 
-    def forward(self, tweet, dist, pos):
+    def forward(self, tweet, dist, pos, tweet_text):
         batch_size = tweet.shape[0]
         seq_len = tweet.shape[1]
         if self.modelType == "LSTM":
@@ -106,6 +107,8 @@ class base_model(nn.Module):
 
         tweet_embedding = self.word_embedding(tweet.long())
         dist_embedding = self.distance_embedding(dist.long())
+        print(tweet_text)
+        print(self.albert(**tweet_text))
 
         tweet = torch.cat([tweet_embedding, dist_embedding], dim=2)
         if self.modelType == "LSTM":
@@ -182,9 +185,9 @@ class Model(nn.Module):
             pos1,
             pos2,
             common_words,
-            day_difference):
-        Vem1 = self.tweet1_model(tweet1, dist1, pos1)
-        Vem2 = self.tweet2_model(tweet2, dist2, pos2)
+            day_difference, tweet_alb1, tweet_alb2):
+        Vem1 = self.tweet1_model(tweet1, dist1, pos1, tweet_alb1)
+        Vem2 = self.tweet2_model(tweet2, dist2, pos2, tweet_alb2)
         common_words = common_words.unsqueeze(1)
         day_difference = day_difference.unsqueeze(1)
 

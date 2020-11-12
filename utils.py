@@ -7,7 +7,7 @@ from tqdm import tqdm
 def train(model, optimizer, criterion, loader, device):
     losses = []
     model.train()
-    for tweet1, tweet2, dist1, dist2, pos1, pos2, common_words, day_difference, label in tqdm(
+    for tweet1, tweet2, dist1, dist2, pos1, pos2, common_words, day_difference, label, tweet_alb1, tweet_alb2 in tqdm(
             loader):
         optimizer.zero_grad()
 
@@ -20,12 +20,14 @@ def train(model, optimizer, criterion, loader, device):
         common_words = common_words.to(device)
         day_difference = day_difference.to(device)
         label = label.to(device)
+        tweet_alb2 = tweet_alb2.to(device)
+        tweet_alb1 = tweet_alb1.to(device)
 
         prediction = model(
             tweet1, tweet2,
             dist1, dist2,
             pos1, pos2,
-            common_words, day_difference
+            common_words, day_difference, tweet_alb1, tweet_alb2
         )
 
         loss = criterion(prediction.squeeze(), label.squeeze())

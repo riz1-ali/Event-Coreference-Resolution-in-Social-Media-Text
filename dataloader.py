@@ -5,6 +5,7 @@ from gensim.models import Word2Vec
 import pickle
 import tokenizer as tk
 from tqdm import tqdm
+from transformers import AlbertTokenizer
 
 
 class dataset(data.Dataset):
@@ -37,10 +38,11 @@ class dataset(data.Dataset):
             self.tweet_pairs[index][1])), torch.Tensor(self.distance_vectors[index][0]), torch.Tensor(
             self.distance_vectors[index][1]), torch.Tensor(self.trigger_word_pos[index][0]), torch.Tensor(
             self.trigger_word_pos[index][1]), torch.Tensor([self.labels[index]]), torch.Tensor(
-            [self.common_words[index]]), torch.Tensor([self.day_difference[index]])
+            [self.common_words[index]]), torch.Tensor([self.day_difference[index]]), self.tweet_pairs[index][0], self.tweet_pairs[index][1]
 
 
 def collate_fn(batch):
+    alb_tokenizer = AlbertTokenizer.from_pretrained('albert-base-v2')
     tweet1s = []
     tweet2s = []
     distance1s = []
@@ -50,6 +52,10 @@ def collate_fn(batch):
     labels = []
     day_difference = []
     common_words = []
+    # alb_tokens_1s = []
+    # alb_tokens_2s = []
+    tweet1 = []
+    tweet2 = []
     for data in batch:
         tweet1s.append(data[0])
         tweet2s.append(data[1])
@@ -60,7 +66,11 @@ def collate_fn(batch):
         labels.append(data[6].item())
         common_words.append(data[7].item())
         day_difference.append(data[8].item())
+        tweet1.append(data[9])
+        tweet2.append(data[10])
 
+    alb_tokens_1s = alb_tokenizer(tweet1, return_tensors="pt", padding=True)
+    alb_tokens_2s = alb_tokenizer(tweet2, return_tensors="pt", padding=True)
     packed_tweet1s = rnn.pack_sequence(tweet1s, enforce_sorted=False)
     packed_tweet2s = rnn.pack_sequence(tweet2s, enforce_sorted=False)
     packed_distance1s = rnn.pack_sequence(distance1s, enforce_sorted=False)
@@ -84,6 +94,8 @@ def collate_fn(batch):
         torch.Tensor(common_words),
         torch.Tensor(day_difference),
         torch.Tensor(labels),
+        alb_tokens_1s,
+        alb_tokens_2s
     )
 
 
@@ -123,4 +135,5 @@ if __name__ == "__main__":
         collate_fn=collate_fn,
         shuffle=True)
     for i in tqdm(loader):
-        pass
+        print(i)
+        break
