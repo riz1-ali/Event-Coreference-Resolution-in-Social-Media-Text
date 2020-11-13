@@ -96,7 +96,7 @@ for epoch in range(args.num_epochs):
     val_loss, val_report = validate(model, criterion, loader_val, device)
     if val_loss < val_loss_store:
         val_loss_store = val_loss
-        torch.save(model.state_dict(), f"model_{args.modelType}_{args.lr}_{args.hidden_size}_Scheduler({args.use_scheduler}).tar")
+        torch.save(model.state_dict(), f"fasttext_model_{args.modelType}_{args.lr}_{args.hidden_size}_Scheduler({args.use_scheduler}).tar")
     if args.use_scheduler:
         scheduler.step(val_loss)
     if args.use_wandb:
