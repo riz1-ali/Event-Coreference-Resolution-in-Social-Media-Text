@@ -75,7 +75,12 @@ def collate_fn(batch):
     packed_tweet2s = rnn.pack_sequence(tweet2s, enforce_sorted=False)
     packed_distance1s = rnn.pack_sequence(distance1s, enforce_sorted=False)
     packed_distance2s = rnn.pack_sequence(distance2s, enforce_sorted=False)
-
+    alb_token_1s_input_ids = alb_tokens_1s['input_ids']
+    alb_token_1s_token_type_ids = alb_tokens_1s['token_type_ids']
+    alb_token_1s_attention_mask = alb_tokens_1s['attention_mask']
+    alb_token_2s_input_ids = alb_tokens_2s['input_ids']
+    alb_token_2s_token_type_ids = alb_tokens_2s['token_type_ids']
+    alb_token_2s_attention_mask = alb_tokens_2s['attention_mask']
     padded_tweet1s, _ = rnn.pad_packed_sequence(
         packed_tweet1s, batch_first=True)
     padded_tweet2s, _ = rnn.pad_packed_sequence(
@@ -94,8 +99,12 @@ def collate_fn(batch):
         torch.Tensor(common_words),
         torch.Tensor(day_difference),
         torch.Tensor(labels),
-        alb_tokens_1s,
-        alb_tokens_2s
+        alb_token_1s_input_ids,
+        alb_token_1s_token_type_ids,
+        alb_token_1s_attention_mask,
+        alb_token_2s_input_ids,
+        alb_token_2s_token_type_ids,
+        alb_token_2s_attention_mask,
     )
 
 
