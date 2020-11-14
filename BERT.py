@@ -266,7 +266,7 @@ trainer = TorchTrainer(
 
 val_dict = {}
 val_loss_store = 1e5
-for epoch in range(10):
+for epoch in tqdm(range(10)):
     losses = trainer.train()
     val_report = trainer.validate()
     val_dict[epoch] = val_report
@@ -275,7 +275,8 @@ for epoch in range(10):
     val_loss = val_report['loss']
     if val_loss < val_loss_store:
         val_loss_store = val_loss
-        torch.save(trainer.get_model().state_dict(), "model_BERT.tar")
+        trainer.save("./BERT_trainer")
+        torch.save(trainer.get_model().state_dict(), "model_BERT_update.tar")
     print(f"{epoch + 1}/{10} : Training Loss {losses['loss']} Validation Loss {val_loss}")
 
 
