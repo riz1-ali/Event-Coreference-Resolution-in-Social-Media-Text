@@ -97,7 +97,7 @@ class base_model(nn.Module):
                     self.device)
                 return h
 
-    def forward(self, tweet, dist, pos, tweet_text):
+    def forward(self, tweet, dist, pos,alb_token_1s_input_ids,  alb_token_1s_token_type_ids, alb_token_1s_attention_mask):
         batch_size = tweet.shape[0]
         seq_len = tweet.shape[1]
         if self.modelType == "LSTM":
@@ -107,9 +107,8 @@ class base_model(nn.Module):
 
         tweet_embedding = self.word_embedding(tweet.long())
         dist_embedding = self.distance_embedding(dist.long())
-        print(tweet_text)
-        print(self.albert(**tweet_text))
-
+        # print(self.albert(**tweet_text))
+        alb_embedding = self.albert(input_ids=alb_token_1s_input_ids, token_type_ids=alb_token_1s_token_type_ids, attention_mask=alb_token_1s_attention_mask)
         tweet = torch.cat([tweet_embedding, dist_embedding], dim=2)
         if self.modelType == "LSTM":
             output, (h_n, c_n) = self.model(tweet, (h_0, c_0))
@@ -132,7 +131,7 @@ class base_model(nn.Module):
 
         t = self.attention(mention_feature.view(batch_size, 1, -1), select)
 
-        Vem = torch.cat([t[0].view(batch_size, -1), mention_feature], dim=1)
+        Vem = torch.cat([t[0].view(batch_size, -1), mention_feature, alb_embedding], dim=1)
 
         return Vem
 
@@ -185,9 +184,25 @@ class Model(nn.Module):
             pos1,
             pos2,
             common_words,
-            day_difference, tweet_alb1, tweet_alb2):
-        Vem1 = self.tweet1_model(tweet1, dist1, pos1, tweet_alb1)
-        Vem2 = self.tweet2_model(tweet2, dist2, pos2, tweet_alb2)
+            day_difference, 
+            alb_token_1s_input_ids, 
+            alb_token_1s_token_type_ids, 
+            alb_token_1s_attention_mask, 
+            alb_token_2s_input_ids, 
+            alb_token_2s_token_type_ids, 
+            alb_token_2s_attention_mask):
+        Vem1 = self.tweet1_model(
+            tweet1, dist1, pos1, 
+            alb_token_1s_input_ids, 
+            alb_token_1s_token_type_ids, 
+            alb_token_1s_attention_mask
+            )
+        Vem2 = self.tweet2_model(
+            tweet2, dist2, pos2, 
+            alb_token_2s_input_ids, 
+            alb_token_2s_token_type_ids, 
+            alb_token_2s_attention_mask
+            )
         common_words = common_words.unsqueeze(1)
         day_difference = day_difference.unsqueeze(1)
 
