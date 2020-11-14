@@ -173,7 +173,7 @@ class Model(nn.Module):
             hidden_size,
             modelType,
             distance_embedding_size)
-        self.ds = nn.Linear(8 * hidden_size + 2, 64)
+        self.ds = nn.Linear(8 * hidden_size + 2 + 2 * 768, 64)
         self.final = nn.Linear(64, 1)
 
     def forward(
