@@ -131,7 +131,7 @@ class base_model(nn.Module):
 
         t = self.attention(mention_feature.view(batch_size, 1, -1), select)
 
-        Vem = torch.cat([t[0].view(batch_size, -1), mention_feature, alb_embedding], dim=1)
+        Vem = torch.cat([t[0].view(batch_size, -1), mention_feature, alb_embedding.pooler_output], dim=1)
 
         return Vem
 
