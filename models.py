@@ -41,13 +41,13 @@ class base_model(nn.Module):
 
         if modelType == "LSTM":
             self.model = nn.LSTM(
-                300 + distance_embedding_size,
+                100 + distance_embedding_size,
                 hidden_size,
                 batch_first=True,
                 bidirectional=True)
         if modelType == "GRU":
             self.model = nn.GRU(
-                300 + distance_embedding_size,
+                100 + distance_embedding_size,
                 hidden_size,
                 batch_first=True,
                 bidirectional=True)
