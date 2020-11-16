@@ -66,7 +66,7 @@ def validate(model, criterion, loader, device):
 
             loss = criterion(prediction.squeeze(), label.squeeze())
             all_predictions.extend(
-                (prediction >= 0.5).long().squeeze().cpu().numpy().tolist())
+                (torch.sigmoid(prediction) >= 0.5).long().squeeze().cpu().numpy().tolist())
             all_labels.extend(label.squeeze().cpu().numpy().tolist())
             losses.append(loss.item())
     return np.mean(losses), classification_report(
