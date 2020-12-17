@@ -80,6 +80,7 @@ def gen_data(tweet_data, tag):
     labels_data = []
     common_words_data = []
     day_difference_data = []
+    distance_vector_data = []
     pair_up_threshold = 604800000
 
     tot_data = []
@@ -88,6 +89,15 @@ def gen_data(tweet_data, tag):
         distance_vecs.append(dis_v)
         trigger_word_pos.append(pos)
         tot_data.append(data)
+    
+    minv = 200
+    for i in distance_vecs:
+        minv = min(minv, min(i))
+    minv -= 1
+    for i in range(len(distance_vecs)):
+        for j in range(len(distance_vecs[i])):
+            distance_vecs[i][j] -= minv
+    
     for i in tqdm(range(len(tot_data))):
         for j in range(i + 1, len(tot_data)):
             if int(tot_data[j][4]) - int(tot_data[i][4]) <= pair_up_threshold:
@@ -96,18 +106,12 @@ def gen_data(tweet_data, tag):
                     label = 1
                 tweet_pairs.append([tot_data[i][-1], tot_data[j][-1]])
                 labels_data.append(label)
+                distance_vector_data.append([distance_vecs[i],distance_vecs[j]])
                 common_words_data.append(common_words(
                     tot_data[i][-1], tot_data[j][-1]))
                 day_difference_data.append(
                     (int(tot_data[j][4]) - int(tot_data[i][4])) / (1000 * 60 * 60 * 24))
-    minv = 200
-    for i in distance_vecs:
-        minv = min(minv, min(i))
-    minv -= 1
-    for i in range(len(distance_vecs)):
-        for j in range(len(distance_vecs[i])):
-            distance_vecs[i][j] -= minv
-    save_loader(tweet_pairs, distance_vecs, trigger_word_pos,
+    save_loader(tweet_pairs, distance_vector_data, trigger_word_pos,
                 labels_data, common_words_data, day_difference_data, tag)
 
 
