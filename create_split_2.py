@@ -77,6 +77,7 @@ def gen_data(tweet_data, tag):
     tweet_pairs = []
     distance_vecs = []
     trigger_word_pos = []
+    first_last_pos = []
     labels_data = []
     common_words_data = []
     day_difference_data = []
@@ -87,7 +88,7 @@ def gen_data(tweet_data, tag):
     for data in tweet_data:
         dis_v, pos = gen_distance_vec(data[-1], data[3])
         distance_vecs.append(dis_v)
-        trigger_word_pos.append(pos)
+        first_last_pos.append(pos)
         tot_data.append(data)
     
     minv = 200
@@ -106,6 +107,7 @@ def gen_data(tweet_data, tag):
                     label = 1
                 tweet_pairs.append([tot_data[i][-1], tot_data[j][-1]])
                 labels_data.append(label)
+                trigger_word_pos.append([first_last_pos[i],first_last_pos[j]])
                 distance_vector_data.append([distance_vecs[i],distance_vecs[j]])
                 common_words_data.append(common_words(
                     tot_data[i][-1], tot_data[j][-1]))
