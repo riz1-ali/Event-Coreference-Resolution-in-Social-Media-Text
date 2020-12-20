@@ -127,7 +127,7 @@ with open(file_path, 'r') as f:
 
 indices = list(range(len(data_)))
 train_idx, test_idx = train_test_split(indices, test_size=0.1, random_state=42)
-train_idx, val_idx = train_test_split(indices, test_size=0.1, random_state=42)
+train_idx, val_idx = train_test_split(train_idx, test_size=0.1, random_state=42)
 
 train_data, val_data, test_data = [], [], []
 
